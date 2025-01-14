@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Employe;
+use App\Form\EmployeType;
 use App\Repository\EmployeRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +21,43 @@ class EmployeController extends AbstractController
             'employes' => $employes
         ]);
     }
+
+    #[Route('/employe/new', name: 'new_employe')]
+    #[Route('/employe/{id}/edit', name: 'edit_employe')]
+    public function new(Employe $employe = null, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if (!$employe) {
+            $employe = new Employe();
+        }
+        
+        $form = $this->createForm(EmployeType::class, $employe);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $employe = $form->getData();
+
+            $entityManager->persist($employe); //prepare PDO
+            $entityManager->flush(); //execute PDO
+
+            return $this->redirectToRoute('app_employe');
+        }
+        
+        return $this->render('employe/new.html.twig', [
+            'formNewEmploye' => $form,
+            'edit' => $employe->getId()
+        ]);
+    }
+
+    #[Route('/employe/{id}/delete', name: 'delete_employe')]
+    public function delete(Employe $employe, EntityManagerInterface $entityManager)
+    {
+        $entityManager->remove($employe);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_employe');
+    }
+
 
     #[Route('/employe/{id}', name: 'show_employe')]
     public function show(Employe $employe): Response

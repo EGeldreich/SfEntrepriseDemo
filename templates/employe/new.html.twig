@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if edit %}
+        Editer un employe
+    {% else %}
+        Ajouter un employe
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if edit %}
+        <h1>Editer un employe</h1>
+        {% else %}
+            <h1>Ajouter un employe</h1>
+    {% endif %}
+
+{# {{ form(formNewEmploye) }} #}
+
+    {{ form_start(formNewEmploye) }}
+
+        <div class="row">
+            <div class="col-sm">
+                {{ form_row(formNewEmploye.nom) }}
+            </div>
+            <div class="col-sm">
+                {{ form_row(formNewEmploye.prenom) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                {{ form_row(formNewEmploye.dateNaissance) }}
+            </div>
+            <div class="col-sm">
+                {{ form_row(formNewEmploye.dateEmbauche) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                {{ form_row(formNewEmploye.ville) }}
+            </div>
+            <div class="col-sm">
+                {{ form_row(formNewEmploye.entreprise) }}
+            </div>
+        </div>
+
+        {{ form_row(formNewEmploye.valider) }}
+
+    {{ form_end(formNewEmploye) }}
+
+{% endblock %}
